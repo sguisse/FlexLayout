@@ -31,7 +31,7 @@ export const TabSet = (props: ITabSetProps) => {
     const buttonBarRef = React.useRef<HTMLDivElement | null>(null);
     const overflowbuttonRef = React.useRef<HTMLButtonElement | null>(null);
     const stickyButtonsRef = React.useRef<HTMLDivElement | null>(null);
-    const timer = React.useRef<NodeJS.Timeout | undefined>(undefined);
+    const timer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
     const icons = layout.getIcons();
 
@@ -43,7 +43,7 @@ export const TabSet = (props: ITabSetProps) => {
         }
 
         const newContentRect = layout.getBoundingClientRect(contentRef.current!);
-        if (!node.getContentRect().equals(newContentRect) && !isNaN(newContentRect.x)) {
+        if (!node.getContentRect().aboutEquals(newContentRect) && !isNaN(newContentRect.x)) {
             node.setContentRect(newContentRect);
             if (splitterDragging) { // next movement will draw tabs again, only redraw after pause/end
                 if (timer.current) {
@@ -54,7 +54,9 @@ export const TabSet = (props: ITabSetProps) => {
                     timer.current = undefined;
                 }, 50);
             } else {
-                layout.redrawInternal("border content rect " + newContentRect);
+                requestAnimationFrame(() => {
+                    layout.redrawInternal("border content rect " + newContentRect);
+                });
             }
         }
     });

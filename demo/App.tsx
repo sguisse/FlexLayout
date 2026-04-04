@@ -32,6 +32,8 @@ function App() {
     const [realtimeResize, setRealtimeResize] = React.useState<boolean>(false);
     const [showLayout, setShowLayout] = React.useState<boolean>(false);
     const [popoutClassName, setPopoutClassName] = React.useState<string>("flexlayout__theme_light");
+    const [useDndKit, setUseDndKit] = React.useState<boolean>(false);
+    const [layoutKey, setLayoutKey] = React.useState<number>(0);
 
     const loadingLayoutName = React.useRef<string | null>(null);
     const nextGridIndex = React.useRef<number>(1);
@@ -100,7 +102,7 @@ function App() {
 
         loadLayout(layout, false);
 
-        // use to generate json typescript interfaces 
+        // use to generate json typescript interfaces
         // Model.toTypescriptInterfaces();
     }, []);
 
@@ -317,7 +319,7 @@ function App() {
                 );
             }
 
-            return <Layout model={model} factory={factory} />;
+            return <Layout model={model} factory={factory} useDndKit={useDndKit} />;
         }
         else if (component === "text") {
             try {
@@ -417,7 +419,7 @@ function App() {
 
                 renderValues.stickyButtons.push(button);
                 // put overflow button before + button (default is after)
-                // renderValues.overflowPosition=0    
+                // renderValues.overflowPosition=0
             }
         }
 
@@ -495,6 +497,8 @@ function App() {
             ref={layoutRef}
             model={model}
             popoutClassName={popoutClassName}
+            useDndKit={useDndKit}
+            key={layoutKey}
             popoutWindowName="Demo Popout"
             factory={factory}
             onAction={onAction}
@@ -595,6 +599,13 @@ function App() {
                             Add Drag
                         </button>
                         <button className="toolbar_control" data-id="add-active" style={{ marginLeft: 5 }} title="Add using Layout.addTabToActiveTabSet" onClick={onAddActiveClick}>Add Active</button>
+                        <span style={{ marginLeft: 10, fontSize: "14px", color: "red", fontWeight: "bold" }}>Use dnd-kit</span>
+                        <input
+                            name="useDndKit"
+                            type="checkbox"
+                            checked={useDndKit}
+                            onChange={(e) => { setUseDndKit(e.target.checked); setLayoutKey(k => k + 1); }}
+                            style={{ marginLeft: 5 }} />
                     </div>
                     <div className={"contents" + (showLayout ? " showLayout" : "")}>
                         {contents}

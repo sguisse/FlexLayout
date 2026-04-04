@@ -12,6 +12,7 @@ import { CLASSES } from "../Types";
 import { isAuxMouseEvent } from "./Utils";
 import { createPortal } from "react-dom";
 import { splitterDragging } from "./Splitter";
+import { useDroppable } from '@dnd-kit/react';
 
 /** @internal */
 export interface ITabSetProps {
@@ -62,6 +63,10 @@ export const TabSet = (props: ITabSetProps) => {
     const { selfRef, userControlledPositionRef, onScroll, onScrollPointerDown, hiddenTabs, onMouseWheel, isDockStickyButtons, isShowHiddenTabs } =
         useTabOverflow(layout, node, Orientation.HORZ, tabStripInnerRef, miniScrollRef,
             layout.getClassName(CLASSES.FLEXLAYOUT__TAB_BUTTON));
+
+    // dnd-kit droppable hook for this tabset (attach to the tabset container)
+    const useDndKit = layout.props.useDndKit ?? true;
+    const { ref: setDroppableRef } = useDroppable({ id: node.getId() });
 
     const onOverflowClick = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
         const callback = layout.getShowOverflowMenu();
@@ -453,7 +458,14 @@ export const TabSet = (props: ITabSetProps) => {
     // note: tabset container is needed to allow flexbox to size without border/padding/margin
     // then inner tabset can have border/padding/margin for styling
     const tabset = (
-        <div ref={selfRef}
+        <div
+            ref={(el) => {
+                // compose the refs: useTabOverflow expects selfRef.current to be set
+                selfRef.current = el;
+                if (useDndKit) {
+                    setDroppableRef(el as Element | null);
+                }
+            }}
             className={cm(CLASSES.FLEXLAYOUT__TABSET_CONTAINER)}
             style={style}
         >
@@ -483,5 +495,3 @@ export const TabSet = (props: ITabSetProps) => {
     }
 
 };
-
-

@@ -1,11 +1,11 @@
 {
-"name": "flexlayout-react",
-  "version": "0.8.19",
+"name": "@sguisse/flexlayout-react",
+  "version": "0.8.19-sguisse.1",
   "description": "A multi-tab docking layout manager",
   "author": "Caplin Systems Ltd",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/caplin/FlexLayout.git"
+    "url": "git+https://github.com/sguisse/FlexLayout.git"
   },
   "license": "ISC",
   "type": "module",

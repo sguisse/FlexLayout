@@ -3,8 +3,8 @@ permissions:
   contents: write
 on:
   push:
-    tags:
-      - "*"
+    branches:
+      - release-sguisse
   workflow_dispatch:
 
 env:
@@ -17,15 +17,33 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v4
 
-      - name: Install and Build
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build demo and docs
         run: |
-          yarn
-          make build-example
-          # 1. We prepare a clean deployment file
-          mkdir deploy
-          # 2. We move the examples into the deployment folder
-          cp -r demo/dist deploy/
-          # 3. We create the .nojekyll file at the ROOT of this folder
+          pnpm build
+
+      - name: Prepare deployment
+        run: |
+          rm -rf deploy
+          mkdir -p deploy
+          cp -R demo/dist/. deploy/
+          mkdir -p deploy/typedoc
+          cp -R typedoc/. deploy/typedoc/
           touch deploy/.nojekyll
 
       - name: Deploy 🚀

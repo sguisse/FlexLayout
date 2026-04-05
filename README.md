@@ -10,9 +10,9 @@ This repository demonstrates a Strangler-Fig style integration of `dnd-kit` (v0.
 
 **Provider**: `src/dnd-kit-integration/FlexDndProvider.tsx` — provides dnd-kit context, listens for dnd-kit events and translates them into FlexLayout model actions (for example using `model.doAction(Actions.moveNode(...))`). The provider is the bridge between dnd-kit events and the FlexLayout model.
 
- **Wrappers**: `src/dnd-kit-integration/DndKitTabWrapper.tsx` and `src/dnd-kit-integration/DndKitTabSetWrapper.tsx` — small components that attach `useDraggable` / `useDroppable` behaviour. Note: to avoid layout regressions the final integration avoids adding extra DOM wrappers into the layout chain; instead the droppable `ref` is composed onto the existing tabset container element.
+**Wrappers**: `src/dnd-kit-integration/DndKitTabWrapper.tsx` and `src/dnd-kit-integration/DndKitTabSetWrapper.tsx` — small components that attach `useDraggable` / `useDroppable` behaviour. Note: to avoid layout regressions the final integration avoids adding extra DOM wrappers into the layout chain; instead the droppable `ref` is composed onto the existing tabset container element.
 
- **`useDndKit` flag**: `src/view/Layout.tsx` was extended with an optional `useDndKit?: boolean` prop. When true, `Layout` is wrapped with the `FlexDndProvider`. This allows opt-in activation of the new behaviour while keeping the original drag system available.
+**`useDndKit` flag**: `src/view/Layout.tsx` was extended with an optional `useDndKit?: boolean` prop. When true, `Layout` is wrapped with the `FlexDndProvider`. This allows opt-in activation of the new behaviour while keeping the original drag system available.
 
 `b` **changes**: `src/view/TabSet.tsx` now composes dnd-kit's `useDroppable` ref with the component's existing `selfRef` so we do not insert an extra DOM wrapper that would break flex sizing and the panel resize behavior.
 

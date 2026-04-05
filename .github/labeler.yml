@@ -1,0 +1,43 @@
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - README.md
+          - CHANGELOG.md
+
+core:
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/**/*
+          - style/**/*
+          - types/**/*
+          - demo/**/*
+
+release:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/release.yml
+          - .github/changelog-configuration.json
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - tests/**/*
+          - tests-playwright/**/*
+
+deps:
+  - changed-files:
+      - any-glob-to-any-file:
+          - pnpm-lock.yaml
+
+infrastructure:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/**/*
+          - .gitignore
+          - .prettierignore
+          - .prettierrc.json
+          - eslint.config.mjs
+          - package.json
+          - playwright.config.ts
+          - tsconfig*.json
+          - vite.config*.ts

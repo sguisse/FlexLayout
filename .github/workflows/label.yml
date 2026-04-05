@@ -1,0 +1,16 @@
+---
+name: Pull request labeler
+on:
+  - pull_request_target
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+jobs:
+  labeler:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - id: label-the-PR
+        uses: actions/labeler@v5

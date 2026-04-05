@@ -70,7 +70,7 @@ export const useTabOverflow = (
             const selectedRect = selectedTabNode.getTabRect()!;
 
             let shift = getNear(stripRect) - getNear(selectedRect);
-            if (shift > 0 || getSize(selectedRect) > getSize(stripRect)) { 
+            if (shift > 0 || getSize(selectedRect) > getSize(stripRect)) {
                 setScrollPosition(getScrollPosition(tabStripRef.current) - shift);
                 repositioningRef.current = true; // prevent onScroll setting userControlledPosition
             } else {
@@ -152,15 +152,20 @@ export const useTabOverflow = (
 
     const onScrollPointerDown = (event: React.PointerEvent<HTMLElement>) => {
         event.stopPropagation();
-        miniScrollRef.current!.setPointerCapture(event.pointerId)
-        const r = miniScrollRef.current?.getBoundingClientRect()!;
+        const miniScroll = miniScrollRef.current;
+        if (!miniScroll) {
+            return;
+        }
+
+        miniScroll.setPointerCapture(event.pointerId);
+        const r = miniScroll.getBoundingClientRect();
         if (orientation === Orientation.HORZ) {
             thumbInternalPos.current = event.clientX - r.x;
         } else {
             thumbInternalPos.current = event.clientY - r.y;
         }
         startDrag(event.currentTarget.ownerDocument, event, onDragMove, onDragEnd, onDragCancel);
-    }
+    };
 
     const onDragMove = (x: number, y: number) => {
         if (tabStripRef.current && miniScrollRef.current) {

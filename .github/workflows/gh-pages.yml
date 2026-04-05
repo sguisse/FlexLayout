@@ -1,0 +1,54 @@
+name: Build and Deploy to GitHub Pages
+permissions:
+  contents: write
+on:
+  push:
+    branches:
+      - release-sguisse
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build demo and docs
+        run: |
+          pnpm build
+
+      - name: Prepare deployment
+        run: |
+          rm -rf deploy
+          mkdir -p deploy
+          cp -R demo/dist/. deploy/
+          mkdir -p deploy/typedoc
+          cp -R typedoc/. deploy/typedoc/
+          touch deploy/.nojekyll
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: deploy # We deploy the content of 'deploy'
+          clean: true # Very important to remove old Markdown files that break Jekyll

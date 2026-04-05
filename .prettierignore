@@ -1,0 +1,9 @@
+dist/
+demo/dist/
+node_modules/
+typedoc/
+types/
+.history/
+coverage/
+playwright-report/
+test-results/

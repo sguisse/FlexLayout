@@ -1,0 +1,87 @@
+name: Dependency Audit
+
+on:
+  pull_request:
+    branches:
+      - master
+      - release-sguisse
+  push:
+    branches:
+      - master
+      - release-sguisse
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  audit:
+    name: Audit Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
+
+      # For PRs: compare base vs head
+      - name: Audit base branch
+        if: github.event_name == 'pull_request'
+        run: |
+          git checkout ${{ github.event.pull_request.base.sha }}
+          pnpm install --frozen-lockfile
+          pnpm audit --json > /tmp/base-audit.json 2>/dev/null || true
+          if [[ -s /tmp/base-audit.json ]]; then
+            jq -r '[(.actions[]?.resolves[]?.id), ((.advisories // {}) | to_entries[]?.value.id)] | .[]? | tostring' /tmp/base-audit.json | sort -u > /tmp/base_advisories.txt
+          else
+            : > /tmp/base_advisories.txt
+          fi
+          echo "Base branch advisories:"
+          cat /tmp/base_advisories.txt || echo "(none)"
+
+      - name: Audit PR branch
+        if: github.event_name == 'pull_request'
+        run: |
+          git checkout ${{ github.event.pull_request.head.sha }}
+          pnpm install --frozen-lockfile
+          pnpm audit --json > /tmp/pr-audit.json 2>/dev/null || true
+          if [[ -s /tmp/pr-audit.json ]]; then
+            jq -r '[(.actions[]?.resolves[]?.id), ((.advisories // {}) | to_entries[]?.value.id)] | .[]? | tostring' /tmp/pr-audit.json | sort -u > /tmp/pr_advisories.txt
+          else
+            : > /tmp/pr_advisories.txt
+          fi
+          echo "PR branch advisories:"
+          cat /tmp/pr_advisories.txt || echo "(none)"
+
+      - name: Check for new vulnerabilities
+        if: github.event_name == 'pull_request'
+        run: |
+          # Find advisories in PR that aren't in base
+          new_advisories=$(comm -23 /tmp/pr_advisories.txt /tmp/base_advisories.txt)
+          if [ -n "$new_advisories" ]; then
+            echo "❌ New vulnerabilities introduced by this PR:"
+            echo "$new_advisories"
+            echo ""
+            echo "Run 'pnpm audit' locally for details."
+            exit 1
+          else
+            echo "✅ No new vulnerabilities introduced by this PR."
+          fi
+
+      # For pushes to master: just run audit for visibility
+      - name: Audit (informational)
+        if: github.event_name == 'push'
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm audit || echo "⚠️ Vulnerabilities found. Run 'pnpm audit' for details."

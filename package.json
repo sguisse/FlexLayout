@@ -1,11 +1,15 @@
 {
-  "name": "flexlayout-react",
-  "version": "0.8.19",
+"name": "@sguisse/flexlayout-react",
+"version": "0.8.19-sguisse.0",
   "description": "A multi-tab docking layout manager",
   "author": "Caplin Systems Ltd",
+  "packageManager": "pnpm@10.28.2",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/caplin/FlexLayout.git"
+    "url": "git+https://github.com/sguisse/FlexLayout.git"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "license": "ISC",
   "type": "module",
@@ -53,6 +57,8 @@
     "build:lib": "vite build --config vite.config.lib.ts",
     "test": "vitest",
     "playwright": "playwright test --ui",
+    "fmt": "prettier --write \"package.json\" \".prettierrc.json\" \".github/**/*.{yml,yaml,json,md}\"",
+    "fmt:check": "prettier --check \"package.json\" \".prettierrc.json\" \".github/**/*.{yml,yaml,json,md}\"",
     "lint": "eslint src/*",
     "doc": "typedoc --out typedoc --exclude \"**/demo/**/*.tsx\" --excludeInternal --disableSources --excludePrivate --excludeProtected --readme none ./src",
     "css": "sass style:style"

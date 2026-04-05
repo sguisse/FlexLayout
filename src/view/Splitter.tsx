@@ -63,27 +63,34 @@ export const Splitter = (props: ISplitterProps) => {
             initalSizes.current = node.getSplitterInitials(index);
         }
 
-        enablePointerOnIFrames(false, layout.getCurrentDocument()!);
+        const currentDocument = layout.getCurrentDocument();
+        const splitterElement = selfRef.current;
+        const domRect = layout.getDomRect();
+        if (!currentDocument || !splitterElement || !domRect) {
+            return;
+        }
+
+        enablePointerOnIFrames(false, currentDocument);
         startDrag(event.currentTarget.ownerDocument, event, onDragMove, onDragEnd, onDragCancel);
 
         pBounds.current = node.getSplitterBounds(index, true);
         const rootdiv = layout.getRootDiv();
-        outlineDiv.current = layout.getCurrentDocument()!.createElement("div");
+        outlineDiv.current = currentDocument.createElement("div");
         outlineDiv.current.style.flexDirection = horizontal ? "row" : "column";
         outlineDiv.current.className = layout.getClassName(CLASSES.FLEXLAYOUT__SPLITTER_DRAG);
         outlineDiv.current.style.cursor = node.getOrientation() === Orientation.VERT ? "ns-resize" : "ew-resize";
 
         if (node.getModel().isSplitterEnableHandle()) {
-            handleDiv.current = layout.getCurrentDocument()!.createElement("div");
+            handleDiv.current = currentDocument.createElement("div");
             handleDiv.current.className = cm(CLASSES.FLEXLAYOUT__SPLITTER_HANDLE) + " " +
                 (horizontal ? cm(CLASSES.FLEXLAYOUT__SPLITTER_HANDLE_HORZ) : cm(CLASSES.FLEXLAYOUT__SPLITTER_HANDLE_VERT));
             outlineDiv.current.appendChild(handleDiv.current);
         }
 
-        const r = selfRef.current?.getBoundingClientRect()!;
+        const r = splitterElement.getBoundingClientRect();
         const rect = new Rect(
-            r.x - layout.getDomRect()!.x,
-            r.y - layout.getDomRect()!.y,
+            r.x - domRect.x,
+            r.y - domRect.y,
             r.width,
             r.height
         );
@@ -259,4 +266,3 @@ export const Splitter = (props: ISplitterProps) => {
             </div>);
     }
 };
-

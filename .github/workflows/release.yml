@@ -96,10 +96,12 @@ jobs:
       - name: Build package
         run: pnpm build
 
-      - name: Publish package to npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public --provenance --tag "${{ inputs.tag }}"
+      # Not woprks in CI due to 2FA and 1Password limitations, and npm provenance provides security so we can skip this step
+      # and publish directly from the CLI with the GitHub token for authentication and provenance
+      #- name: Publish package to npm
+      #  env:
+      #    NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #  run: npm publish --access public --provenance --tag "${{ inputs.tag }}"
 
       - name: Commit version bump and push
         run: |

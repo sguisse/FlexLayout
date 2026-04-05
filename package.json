@@ -1,6 +1,6 @@
 {
   "name": "@sguisse/flexlayout-react",
-  "version": "0.8.19-sguisse.0",
+  "version": "0.8.19-sguisse.1",
   "description": "A multi-tab docking layout manager",
   "author": "Caplin Systems Ltd",
   "packageManager": "pnpm@10.28.2",
@@ -70,12 +70,12 @@
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
   },
-    "dependencies": {
-        "@dnd-kit/react": "^0.3.2",
-        "@dnd-kit/dom": "^0.3.2",
-        "@dnd-kit/abstract": "^0.3.2",
-        "@dnd-kit/collision": "^0.3.2"
-    },
+  "dependencies": {
+    "@dnd-kit/react": "^0.3.2",
+    "@dnd-kit/dom": "^0.3.2",
+    "@dnd-kit/abstract": "^0.3.2",
+    "@dnd-kit/collision": "^0.3.2"
+  },
   "devDependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",

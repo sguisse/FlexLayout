@@ -633,14 +633,6 @@ export class LayoutInternal extends React.Component<ILayoutInternalProps, ILayou
                 const renderTab = child.isRendered() || selected || !child.isEnableRenderOnDemand();
 
                 if (renderTab) {
-                    const tabElement = (
-                        <Tab
-                            layout={this}
-                            path={path}
-                            node={child}
-                            selected={selected} />
-                    );
-
                     tabs.set(child.getId(), (
                         <Tab
                             key={child.getId()}

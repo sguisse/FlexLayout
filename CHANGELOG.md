@@ -1,3 +1,7 @@
+## 0.8.19-sguisse.1 - 2026-04-04
+
+* **added:** Dnd-Kit 0.3.2 to manage Dnd and resizing
+
 ## 0.8.19 - 2026-03-06
 
 * **Fixed:** Fixed Maximum update depth exceeded error due to size jitter
@@ -235,12 +239,12 @@ Published with additional files by mistake.
 ## 0.6.3
 
 * **Changed:** To using named rather than default import/exports. This will require changing top-level imports:
-    ```javascript
-    // from:
-    import FlexLayout from 'flexlayout-react';
-    // to:
-    import * as FlexLayout from 'flexlayout-react';
-    ```
+  ```javascript
+  // from:
+  import FlexLayout from 'flexlayout-react';
+  // to:
+  import * as FlexLayout from 'flexlayout-react';
+  ```
 * **Added:** Typedoc link to README.
 
 ## 0.6.2
@@ -315,7 +319,7 @@ Published with additional files by mistake.
 ## 0.5.13
 
 * **Added prop:** `realtimeResize` to make tabs resize as their splitters are dragged.
-    **Warning:** This can cause resizing to become choppy when tabs are slow to draw.
+  **Warning:** This can cause resizing to become choppy when tabs are slow to draw.
 
 ## 0.5.12
 

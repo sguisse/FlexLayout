@@ -1,0 +1,64 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      semver:
+        description: "The semver to use"
+        required: true
+        default: "prerelease"
+        type: choice
+        options:
+          - prerelease # Add this option (increment the .1, .2 of the suffix)
+          - patch # (Will move from 0.8.19-sguisse.x to 0.8.20)
+          - minor
+          - major
+      tag:
+        description: "The npm tag"
+        required: false
+        default: "latest"
+      # We deactivate automatic triggering on PR closed
+      # to avoid posting by mistake. We keep the manual for testing.
+  push:
+    branches:
+      - release-sguisse
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  release:
+    # We make sure that this ONLY runs on your release branch
+    if: github.ref == 'refs/heads/release-sguisse'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write # Required for NPM provenance (security)
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Important so that the tool can calculate the changelog
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4 # Update to v4 (more stable)
+        with:
+          node-version: 24
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install & Build
+        run: |
+          yarn install
+          yarn build
+      # --frozen-lockfile
+      - name: Optic Release Automation
+        uses: nearform-actions/optic-release-automation-action@v4
+        with:
+          semver: ${{ github.event.inputs.semver || 'patch' }}
+          npm-tag: ${{ github.event.inputs.tag || 'latest' }}
+          npm-token: ${{ secrets.NPM_TOKEN }}
+          provenance: true
+          # We ensure that the action does not re-build unnecessarily
+          build-command: "echo 'Already built'"
